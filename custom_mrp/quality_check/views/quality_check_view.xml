@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="quality_accept_form" model="ir.ui.view">
+		<field name="name">quality.accept.form</field>
+		<field name="model">quality.accept</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<form string="Quality Checking Of the Product" version="7.0">
+				<header>
+					<button name="done" string="Done" type="object" attrs="{'invisible': [('state','!=','draft')]}" />
+					<button name="stock_check" string="Stock"  type="object" class="oe_highlight" invisible="1" />
+					<field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+				</header>
+				<sheet>
+					<group col='2'>
+						<field name="name" />
+						<field name="date" />
+						<field name="grn_id" attrs="{'invisible': [('mrp','=',True)]}" />
+						<field name="grn_date" attrs="{'invisible': [('mrp','=',True)]}" />
+						<field name="partner_id" attrs="{'invisible': [('mrp','=',True)]}" />
+						<field name="accept_date" />
+						<field name="mrp_no" attrs="{'invisible': [('mrp','=',False)]}" />
+						<field name="company_id" invisible="1" />
+						<field name="mrp" invisible="1" />
+						<field name="show_confirm" invisible="1" />
+						<newline />
+					</group>
+
+					<notebook>
+						<page string="Lines">
+							<field colspan="4" name="quality_line" nolabel="1" widget="one2many_list">
+								<tree string="Quality Control Line">
+									<field name="product_id" />
+									<field name="product_uom" />
+
+									<field name="received_qty" />
+									<field name="accepted_qty" />
+
+									<field name="rejected_qty" />
+									<field name="rework_qty" />
+
+									<field name="accept_location_id" invisible="1" />
+									<field name="accept_location_dest_id" invisible="1" />
+									<field name="reject_location_dest_id" invisible="1" />
+									<field name="rework_location_dest_id" invisible="1" />
+								</tree>
+								<form>
+									<header>
+										<button name="confirm" states="draft" string="Confirm" type="object" attrs="{'invisible': [('state','=','confirmed')]}" />
+										<!-- <button name="create_do" string="Create DO For Reject" type="object" attrs="{'invisible': [('state','=','draft')]}" context="{'type': 'rejected'}"/>
+												<button name="create_do" string="Create DO For Rework" type="object" attrs="{'invisible': [('state','=','draft')]}" context="{'type': 'rework'}"/> -->
+										<field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+									</header>
+									<group>
+										<group>
+											<field name="product_id" />
+											<field name="product_uom" />
+											<field name="accepted_qty" attrs="{'readonly': [('state','!=','draft')]}" />
+											<field name="accept_location_dest_id" attrs="{'required': [('accepted_qty', '!=', 0)],'readonly': [('state','!=','draft')]}" />
+											<field name="rework_qty" attrs="{'readonly': [('state','!=','draft')]}" />
+											<field name="rework_location_dest_id" attrs="{'required': [('rework_qty', '!=', 0)],'readonly': [('state','!=','draft')]}" />
+											<field name="rework_reason" attrs="{'required': [('rework_qty', '!=', 0)],'readonly': [('state','!=','draft')]}" />
+										</group>
+										<group>
+											<field name="received_qty" readonly="1" />
+											<field name="accept_location_id" readonly="1" />
+											<field name="rejected_qty" attrs="{'readonly': [('state','!=','draft')]}" />
+											<field name="reject_location_dest_id" attrs="{'required': [('rejected_qty', '!=', 0)],'readonly': [('state','!=','draft')]}" />
+											<field name="rejected_reason" attrs="{'required': [('rejected_qty', '!=', 0)],'readonly': [('state','!=','draft')]}" />
+										</group>
+										<group>
+											<field name="rejected_deliver_id" attrs="{'invisible': [('rejected_deliver_id', '=', False)]}" />
+											<field name="rework_deliver_id" attrs="{'invisible': [('rework_deliver_id', '=', False)]}" />
+										</group>
+									</group>
+								</form>
+							</field>
+						</page>
+						<page string="Stock Pickings">
+							<field name="quality_picking_line" widget="one2many_list" nolabel="1">
+								<tree string="Stock Picking Lines">
+									<field name="name" />
+									<field name="partner_id" />
+									<field name="state" />
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="quality_accept_tree" model="ir.ui.view">
+		<field name="name">quality.accept.tree</field>
+		<field name="model">quality.accept</field>
+		<field name="arch" type="xml">
+			<tree string="Quality Checking Of the Product">
+				<field name="name" />
+				<field name="grn_id" />
+				<field name="grn_date" />
+				<field name="partner_id" />
+				<field name="mrp_no" />
+				<field name="mrp" invisible="1" />
+				<field name="accept_date" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="quality_information_form" model="ir.actions.act_window">
+		<field name="name">Quality Check</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">quality.accept</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+	<!-- <record id="account.product_normal_form_view" model="ir.ui.view">
+		<field name="name">product.normal.form.inherit</field>
+		<field name="model">product.product</field>
+		<field name="priority">5</field>
+		<field name="inherit_id" ref="product.product_normal_form_view" />
+		<field name="arch" type="xml">
+			<notebook position="inside">
+				<page string="Accounting" groups="account.group_account_invoice"
+					invisible="1">
+					<group name="properties">
+						<group>
+							<field name="property_account_income" domain="[('type','=','other')]"
+								groups="account.group_account_user" />
+							<field name="taxes_id" colspan="2"
+								attrs="{'readonly':[('sale_ok','=',0)]}" widget="many2many_tags" />
+						</group>
+						<group>
+							<field name="property_account_expense" domain="[('type','=','other')]"
+								groups="account.group_account_user" />
+							<field name="supplier_taxes_id" colspan="2" widget="many2many_tags" />
+						</group>
+					</group>
+				</page>
+			</notebook>
+		</field>
+		</record> -->
+
+	<menuitem id="quality_main_menu" name="Quality Control" sequence="80" />
+	<menuitem id="quality_menu" name="Quality Control" sequence="3" parent="quality_main_menu" />
+	<menuitem id="quality_info_form" action="quality_information_form" name="Quality Check" sequence="1" parent="quality_menu" />
+
+</odoo>
+
+
+
+

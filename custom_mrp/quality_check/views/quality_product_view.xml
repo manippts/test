@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_quality_view_form" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                 <label for="purchase_ok" position="after">
+          <newline />
+          <field name="qual_check" />
+          <label for="qual_check" />
+          <group>
+            <field name="quality_check" string="Quality Control Location"
+              attrs="{'invisible': [('qual_check','!=',True)],'required':  [('qual_check','=',True)]}" domain="[('location_id', '!=',False), ('usage', '!=', 'view')]"/>
+          </group>
+        </label>
+        </field>
+    </record>
+
+    <record id="product_quality_view_form" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                 <label for="purchase_ok" position="after">
+					<newline />
+					<field name="qual_check" />
+					<label for="qual_check" />
+					<group>
+						<field name="quality_check" string="Quality Control Location"
+							attrs="{'invisible': [('qual_check','!=',True)],'required':  [('qual_check','=',True)]}" domain="[('location_id', '!=',False), ('usage', '!=', 'view')]"/>
+					</group>
+				</label>
+        </field>
+    </record>
+
+    <record id="view_qual_check_stock_location_form" model="ir.ui.view">
+      <field name="name">quality.check.stock.location.form</field>
+      <field name="model">stock.location</field>
+      <field name="inherit_id" ref="stock.view_location_form" />
+      <field name="arch" type="xml">
+        <field name="scrap_location" position="after">
+        <field name="quality_check"/>
+        </field>
+      </field>
+    </record>
+
+</odoo>   
+

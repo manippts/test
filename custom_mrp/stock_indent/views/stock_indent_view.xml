@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<!-- Indent Form View -->
+	<record id='view_stock_indent_indent_form' model="ir.ui.view">
+		<field name="name">indent.indent.form</field>
+		<field name="model">indent.indent</field>
+		<field name="arch" type="xml">
+			<form string="Material/Purchase Requisition">
+				<header>
+					<button name="indent_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" />
+					<button name="action_picking_purchase_create" string="Approve" type="object" states="waiting_approval" class="oe_highlight" groups="stock_indent.group_stock_indent_approver" />
+					<button name="indent_reject" string="Reject" type="object" states="waiting_approval" groups="stock_indent.group_stock_indent_approver" />
+					<button name="action_products_return" string="Products to Return" type="object" class="oe_highlight" states="inprogress,received" />
+					<button name="action_receive_products" string="Issue Product(s)" states="inprogress,received" type="object" class="oe_highlight" groups="stock_indent.group_stock_indent_issuer" />
+					<button name="open_purchase_requisition_wizard" string="Raise Indent" states="inprogress" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('requisition_id', '!=', False)]}" groups="stock_indent.group_stock_indent_issuer" />
+					<button name="open_purchase_requisition" string="View Indent" states="inprogress,received" type="object" attrs="{'invisible': ['|', ('requisition_id', '=', False)]}" class="oe_highlight" groups="stock_indent.group_stock_indent_issuer" />
+					<field name="state" widget="statusbar" statusbar_visible="draft,conform,waiting_approval,inprogress,received,reject" />
+				</header>
+				<sheet>
+					<div class="oe_title">
+						<h1>
+							<field name="name" readonly="1" />
+						</h1>
+					</div>
+					<group>
+						<group>
+							<field name="indentor_id" />
+							<field name="department_id" />
+							<field name="purpose" />
+							<field name="origin" />
+							<field name="src_location_id" domain="[('location_id', '!=',False), ('usage', '!=', 'view')]"/>
+							<field name="location_id" domain="[('location_id', '!=',False), ('usage', '!=', 'view')]"/>
+						</group>
+						<group>
+							<field name="indent_date" />
+							<field name="required_date" />
+							<field name="approve_date" />
+							<field name="requirement" />
+							<field name="type" />
+						</group>
+					</group>
+					<notebook>
+						<page string="Products">
+							<field name="product_lines">
+								<form string="Products" version="7.0">
+									<group>
+										<group>
+											<field name="product_id" groups="base.group_user" />
+											<field name="required_on" required="1" />
+											<label for="product_uom_qty" />
+											<div>
+												<field name="product_uom_qty" class="oe_inline" />
+
+												<field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button" />
+											</div>
+											<label for="product_uom_qty_issued" />
+											<div>
+												<field name="product_uom_qty_issued" />
+											</div>
+											<!-- <field name="product_uom"/> -->
+											<field name="price_unit" />
+											<field name="return_type" />
+											<field name="return_date" attrs="{'invisible': [('return_type', '=', 'non_return')], 'required': [('return_type', '=', 'return')]}" />
+										</group>
+										<group>
+											<field name="indent_type" invisible="1" />
+											<field name="qty_available" />
+											<field name="virtual_available" />
+											<field name="delay" />
+										</group>
+									</group>
+									<label for="name" />
+									<field name="name" />
+									<label for="specification" />
+									<field name="specification" />
+								</form>
+								<tree string="Products">
+									<field name="sequence" widget="handle" />
+									<field name="product_id" />
+									<field name="specification" />
+									<field name="product_uom_qty" sum="Total Qty" />
+									<field name="product_uom_qty_issued" />
+									<field name="qty_available" />
+									<field name="product_uom" string="UOM" />
+									<field name="price_unit" sum="Total Price" />
+									<field name="price_subtotal" sum="Total Price" />
+									<field name="required_on" />
+								</tree>
+							</field>
+						</page>
+						<page string="Other Info">
+							<group>
+								<group>
+									<field name="product_return_status" />
+									<field name="manager_id" readonly="1" />
+									<field name="approver_id" readonly="1" />
+									<field name="company_id" readonly="1" />
+									<field name="requisition_id" invisible="1" />
+								</group>
+								<group>
+									<field name="move_type" />
+									<field name="warehouse_id" />
+									<field name="picking_type_id" />
+								</group>
+							</group>
+						</page>
+					</notebook>
+				</sheet>
+				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" />
+					<field name="message_ids" widget="mail_thread" />
+				</div>
+			</form>
+		</field>
+	</record>
+
+	<!-- Indent Tree View -->
+	<record id='view_indent_indent_tree' model='ir.ui.view'>
+		<field name="name">indent.indent.tree</field>
+		<field name="model">indent.indent</field>
+		<field name="arch" type="xml">
+			<tree string="Material/Purchase Requisition" colors="gray:state=='received';green:state=='waiting_approval';">
+				<field name="name" />
+				<field name="indentor_id" />
+				<field name="department_id" />
+				<field name="type" />
+				<field name="indent_date" />
+				<field name="required_date" />
+				<field name="approve_date" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="view_department_form_extends" model="ir.ui.view">
+		<field name="name">hr.department.form</field>
+		<field name="model">hr.department</field>
+		<field name="inherit_id" ref="hr.view_department_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='parent_id']" position="after">
+				<field name="location_dest_id" />
+			</xpath>
+		</field>
+	</record>
+
+	<!-- Indent Search View -->
+	<record id="view_indent_indent_filter" model="ir.ui.view">
+		<field name="name">indent.indent.list.select</field>
+		<field name="model">indent.indent</field>
+		<field name="arch" type="xml">
+			<search string="Material/Purchase Requisition">
+				<field name="name" string="Indent Name" />
+				<field name="indent_date" />
+				<field name="required_date" />
+				<field name="approve_date" />
+				<field name="indentor_id" />
+				<field name="department_id" />
+
+				<filter string="Draft" name="draft" domain="[('state','=','draft')]" />
+				<filter string="Waiting For Approval" name="waiting" domain="[('state','=','waiting_approval')]" />
+				<filter string="Inprogress" name="inprogress" domain="[('state','=','inprogress')]" />
+				<filter string="Received" name="received" domain="[('state','=','received')]" />
+				<filter string="Rejected" name="reject" domain="[('state','=','reject'),('active','=',False)]" />
+
+				<filter string="My Request" name="draft" domain="[('indentor_id','=',uid)]" />
+
+				<group expand="0" string="Group By...">
+					<filter string="Requester" context="{'group_by': 'indentor_id'}" />
+					<filter string="Department" context="{'group_by': 'department_id'}" />
+					<filter string="Requirement" context="{'group_by': 'requirement'}" />
+					<filter string="Indent Type" context="{'group_by': 'type'}" />
+					<filter string="Date" context="{'group_by': 'indent_date'}" />
+					<filter string="Status" context="{'group_by': 'state'}" />
+				</group>
+			</search>
+		</field>
+	</record>
+
+	<!-- Indent Window Action -->
+	<record id='action_indent_indent' model='ir.actions.act_window'>
+		<field name="name">Material Requisition</field>
+		<field name="res_model">indent.indent</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="search_view_id" ref="view_indent_indent_filter" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+					Click to create a new indent.
+				</p>
+		</field>
+	</record>
+
+	<!-- Indent Menu -->
+	<menuitem name="Material Requisition" parent="stock.menu_stock_root" id="menu_indent_indent_main" sequence="2" />
+	<menuitem name="Material Requisition" action="action_indent_indent" parent="menu_indent_indent_main" id="menu_indent_indent_main1" sequence="2" />
+
+
+	<record id="action_picking_indent_returns" model="ir.actions.act_window">
+		<field name="name">Material Returns</field>
+		<field name="res_model">stock.picking</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,calendar</field>
+		<field name="domain">[('indent_return', '=', True)]</field>
+		<field name="context">{}</field>
+		<field name="search_view_id" ref="stock.view_picking_internal_search" />
+	</record>
+
+	<menuitem action="action_picking_indent_returns" parent="menu_indent_indent_main" id="menu_indent_returns" sequence="6" name="Material Returns" groups="stock.group_stock_user" />
+
+
+</odoo>

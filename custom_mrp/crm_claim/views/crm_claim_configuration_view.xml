@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+		<!-- Case Category -->
+		<record id="view_crm_case_categ_form" model="ir.ui.view">
+         <field name="name">crm.case.categ.form</field>
+         <field name="model">crm.case.categ</field>
+         <field name="arch" type="xml">
+	         <form string="Case Category">
+	         	<sheet>
+		         	<group>
+			        	<field name="name"/>
+			        </group>
+		        </sheet>
+		     </form>
+         </field>
+      </record>
+      
+      <record id="view_crm_case_categ_tree" model="ir.ui.view">
+         <field name="name">crm.case.categ.tree</field>
+         <field name="model">crm.case.categ</field>
+         <field name="arch" type="xml">
+	         <tree string="Case Category">
+		        <field name="name"/>
+		     </tree>
+         </field>
+      </record>
+      
+      <record id="action_crm_case_categ" model="ir.actions.act_window">
+         <field name="name">Case Category</field>
+         <field name="type">ir.actions.act_window</field>
+         <field name="res_model">crm.case.categ</field>
+         <field name="view_type">form</field>
+         <field name="view_mode">tree,form</field>
+      </record>
+      
+      <menuitem id="menu_crm_claim_configuration" name="Configuration" parent="main_menu_aftersale"/>
+      <menuitem action="action_crm_case_categ" id="menu_crm_case_categ" parent="menu_crm_claim_configuration"/>
+      
+      <record id="view_crm_claim_type_form" model="ir.ui.view">
+         <field name="name">crm.claim.type.form</field>
+         <field name="model">crm.claim.type</field>
+         <field name="arch" type="xml">
+	         <form string="Crm Claim Type">
+	         	<sheet>
+		         	<group>
+			         	<group>
+				        	<field name="name"/>
+				        	<field name="active"/>
+				        </group>
+				        <group>
+				        	<field name="description"/>
+				        </group>
+				    </group>
+			    </sheet>
+		     </form>
+         </field>
+      </record>
+      
+      <record id="view_crm_claim_type_tree" model="ir.ui.view">
+         <field name="name">crm.claim.type.tree</field>
+         <field name="model">crm.claim.type</field>
+         <field name="arch" type="xml">
+	         <tree string="Crm Claim Type">
+	        	<field name="name"/>
+	        	<field name="active"/>
+	        	<field name="description"/>
+		     </tree>
+         </field>
+      </record>
+      
+      <record id="action_crm_claim_type" model="ir.actions.act_window">
+         <field name="name">Claim Types</field>
+         <field name="type">ir.actions.act_window</field>
+         <field name="res_model">crm.claim.type</field>
+         <field name="view_type">form</field>
+         <field name="view_mode">tree,form</field>
+      </record>
+      <menuitem action="action_crm_claim_type" id="menu_crm_claim_type" parent="menu_crm_claim_configuration"/>
+      
+      <record id="view_crm_claim_stage_form" model="ir.ui.view">
+         <field name="name">crm.claim.stage.form</field>
+         <field name="model">crm.claim.stage</field>
+         <field name="arch" type="xml">
+	         <form string="Crm Claim Stage">
+	         	<sheet>
+		         	<group>
+			         	<group>
+				        	<field name="name"/>
+				        	<field name="sequence"/>
+				        	<field name="case_default"/>
+				        	<field name="section_ids"/>
+				        </group>
+				        <group>
+				        	<field name="claim_common"/>
+				        </group>
+				    </group>
+			    </sheet>
+		     </form>
+         </field>
+      </record>
+      
+      <record id="view_crm_claim_stage_tree" model="ir.ui.view">
+         <field name="name">crm.claim.stage.tree</field>
+         <field name="model">crm.claim.stage</field>
+         <field name="arch" type="xml">
+	         <tree string="Crm Claim Stage">
+	        	<field name="name"/>
+	        	<field name="sequence"/>
+	        	<field name="case_default"/>
+	        	<field name="section_ids"/>
+	        	<field name="claim_common"/>
+		     </tree>
+         </field>
+      </record>
+      
+      <record id="action_crm_claim_stage" model="ir.actions.act_window">
+         <field name="name">Stage</field>
+         <field name="type">ir.actions.act_window</field>
+         <field name="res_model">crm.claim.stage</field>
+         <field name="view_type">form</field>
+         <field name="view_mode">tree,form</field>
+         <field name="context">{}</field>
+         <field name="domain">[]</field>
+      </record>
+      <menuitem action="action_crm_claim_stage" id="menu_crm_claim_stage" parent="menu_crm_claim_configuration"/>
+      
+</odoo>

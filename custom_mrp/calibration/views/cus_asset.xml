@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record model="ir.ui.view" id="view_account_asset_asset_form_inherited">
+		<field name="name">account.asset.asset.form</field>
+		<field name="model">account.asset.asset</field>
+		<field name="inherit_id" ref="account_asset.view_account_asset_asset_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//page[2]" position="after">
+				<page string="Calibration Information">
+					<group>
+						<group>
+							<field name="range" />
+							<field name="least_count" />
+							<field name="serial_no" />
+						</group>
+						<group>
+							<field name="make" />
+							<field name="model" />
+							<label for="calibration_frequency" />
+							<div class='o_row'>
+								<field name="calibration_frequency" string="Calibration Frequency" style="min-width: 20px;" attrs="{'readonly': [('state','!=','draft')]}" />
+								<span>/ Month(s)</span>
+							</div>
+						</group>
+					</group>
+				</page>
+			</xpath>
+			<xpath expr="//page[3]" position="after">
+				<page string="Calibration History">
+					<field name="calibration_history_ids" readonly="1">
+						<tree editable="bottom">
+							<field name="date" />
+							<field name="agency" />
+							<field name="report_no" />
+							<field name="observed_error" />
+							<field name="error_limit" />
+							<field name="calibration_cost" />
+							<field name="next_calibration_date" />
+							<field name="checked_by" />
+							<field name="remarks" />
+						</tree>
+					</field>
+				</page>
+			</xpath>
+		</field>
+	</record>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+		 <record id="view_multi_material_request" model="ir.ui.view">
+            <field name="name">Multiple Material Request</field>
+            <field name="model">multi.material.request</field>
+            <field name="arch" type="xml">
+                <form string="Material Requisition details" version="7">
+                    <group>
+                        <field name="product_ids" nolabel="1">
+                            <tree string="Material Requisition Details" editable="bottom" >
+                                <field name="product_id" required="1"/>
+                                <field name="product_uom_id"/>
+                                <field name="product_qty"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="create_material_request_call" string="_Apply" type="object" class="oe_highlight"/>
+                        or
+                        <button string="_Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_multi_material_req_wizard">
+            <field name="name">Material Request</field>
+            <field name="res_model">multi.material.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_multi_material_request"/>
+            <field name="target">new</field>
+        </record>
+
+	</data>
+</openerp>

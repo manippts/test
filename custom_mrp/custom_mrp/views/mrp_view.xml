@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="mrp_production_form_view_form1" model="ir.ui.view">
+		<field name="name">mrp.production.form1</field>
+		<field name="model">mrp.production</field>
+		<field name="inherit_id" ref="mrp.mrp_production_form_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//button[@name='action_cancel']" position="after">
+				<button name="%(action_sub_contract)d" attrs="{'invisible':['|', ('mrp_type', '!=', 'sub_contracting'), ('state', '=', 'done')]}" string="Sub Contract" type="action" class="oe_highlight" />
+			</xpath>
+
+			<xpath expr="//button[@name='open_produce_product'][2]" position="replace">
+				<button name="open_produce_product" attrs="{'invisible': ['|', '|', '|', '|', ('mrp_type', '=', 'sub_contracting'), ('check_to_done', '=', True), ('availability', '!=', 'waiting'), ('state', 'not in', ('confirmed','progress')), ('routing_id', '!=', False)]}" string="Produce" type="object" />
+			</xpath>
+
+			<xpath expr="//button[@name='open_produce_product'][1]" position="replace">
+				<button name="open_produce_product" attrs="{'invisible': ['|', '|', '|', '|', ('mrp_type', '=', 'sub_contracting'), ('check_to_done', '=', True), ('availability', 'not in', ['partially_available', 'assigned']), ('state', 'not in', ('confirmed','progress')), ('routing_id', '!=', False)]}" string="Produce" type="object" class="oe_highlight" />
+				<button name="do_produce" string="Produce" attrs="{'invisible':['|', ('mrp_type', '!=', 'sub_contracting'), ('state', 'not in', ('confirmed','progress'))]}" type="object" class="oe_highlight" />
+			</xpath>
+
+			<xpath expr="//field[@name='bom_id']" position="before">
+				<field name="mrp_type" attrs="{'invisible': [('work_order_level', '=', True)], 'required': [('work_order_level', '=', False)]}" />
+			</xpath>
+
+			<xpath expr="//div[@class='oe_button_box']" position="inside">
+				<button name="%(action_multi_material_req_wizard)d" attrs="{'invisible':['|', '|', ('mrp_type', '=', 'sub_contracting'), ('work_order_level', '!=', False)]}" style="padding-right:10px;" class="oe_inline oe_stat_button" icon="fa-cogs" context="{'default_active_id':active_id}" type="action">
+					<div class="o_form_field o_stat_info">
+						<span class="o_stat_text">Create<br />Material Request</span>
+					</div>
+				</button>
+				<button name="action_view_meterial_request" style="padding-right:10px;" attrs="{'invisible':['|','|',('mrp_type', '=', 'sub_contracting'),('material_req_id','=', [(6, False, [])]), ('work_order_level', '=', True)]}" icon="fa-link" class="oe_inline oe_stat_button" type="object">
+					<div class="o_form_field o_stat_info">
+						<span class="o_stat_text">View Material<br />Request</span>
+					</div>
+				</button>
+			</xpath>
+
+			<xpath expr="//field[@name='origin']" position="after">
+				<field name="out_picking_id" attrs="{'invisible': [('out_picking_id', '=', False)]}" />
+				<field name="purchase_id" attrs="{'invisible': [('purchase_id', '=', False)]}" />
+				<field name="material_req_id" widget="many2many_tags" attrs="{'invisible': [('material_req_id','=', [(6, False, [])])]}" />
+				<field name="work_order_level" />
+			</xpath>
+
+			<xpath expr="//form/sheet/notebook/page[1]/field[@name='move_raw_ids']/tree/field[@name='quantity_done']" position="after">
+				<field name="sub_contract_done_quantity" />
+			</xpath>
+
+			<xpath expr="//form/sheet/notebook/page[2]/field[@name='move_finished_ids']/tree/field[@name='quantity_done']" position="after">
+				<field name="sub_contract_done_quantity" string="Sub-Contract Produced Quantity" />
+			</xpath>
+
+		</field>
+	</record>
+
+	<record id="seq_manufacturing_order_id" model="ir.sequence">
+		<field name="name">Mrp Workorder</field>
+		<field name="code">mrp.seq</field>
+		<field name="prefix">MO /</field>
+		<field name="padding">5</field>
+		<field name="company_id" eval="False" />
+	</record>
+
+	<record model="ir.ui.view" id="mrp_production_workcenter_form_view_inherit_extends">
+		<field name="name">mrp.production.work.order.form</field>
+		<field name="model">mrp.workorder</field>
+		<field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit" />
+		<field name="arch" type="xml">
+			<xpath expr="//button[@name='button_unblock']" position="after">
+				<!-- <button name="create_sub_contract_from_workcenter" attrs="{'invisible':[('work_center_type', '!=', 'sub_contracting')]}" string="Sub Contract" type="object" class="oe_highlight" /> -->
+				<button name="%(action_sub_contract)d" attrs="{'invisible':['|', ('work_center_type', '!=', 'sub_contracting'), ('state', '!=', 'progress')]}" string="Sub Contract" type="action" class="oe_highlight" />
+				<button name="create_material_request_from_workcenter" attrs="{'invisible':['|', '|','|', ('mr_pro__id', '!=', False), ('work_center_type', '!=', 'inhouse'), ('is_work_order_level', '=', False), ('state', '!=', 'progress')]}" string="Create Material Request" type="object" class="oe_highlight" />
+				<button name="action_view_meterial" attrs="{'invisible':[('mr_pro__id', '=', False)]}" string="View Material Request" type="object" class="oe_highlight" />
+			</xpath>
+
+			<xpath expr="//field[@name='product_id']" position="before">
+				<field name="reference" />
+			</xpath>
+
+			<xpath expr="//field[@name='product_id']" position="after">
+				<field name="work_center_type" attrs="{'invisible': [('is_work_order_level', '=', False)], 'required': [('is_work_order_level', '=', True)]}" />
+				<field name="is_work_order_level" />
+				<field name="mr_pro__id" attrs="{'invisible': [('is_work_order_level', '=', False)]}" />
+				<field name="purchase_id" attrs="{'invisible': [('work_center_type', '!=', 'sub_contracting')]}" />
+				<field name="out_picking_id" attrs="{'invisible': [('work_center_type', '!=', 'sub_contracting')]}" />
+			</xpath>
+
+			<xpath expr="//button[@name='record_production']" position="replace">
+				<button name="action_record_production_quality" type="object" string="Done" class="btn-success" attrs="{'invisible': ['|', '|', '|', ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>
+			</xpath>
+
+		<!-- 	<xpath expr="//button[@name='record_production']" position="after">
+				<button name="action_quality" string="Produce" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('is_work_order_level', '=', False), ('state', '!=', 'progress'), ('work_center_type', '=', 'sub_contracting')]}" />
+			</xpath> -->
+			<xpath expr="/form/sheet/notebook/page[3]" position="after">
+				<page string="Quality Information">
+					<field name="quality_line_ids" readonly="1" nolabel="1">
+						<tree string="Quality">
+							<field name="date_time" />
+							<field name="produced_qty" />
+							<field name="accepted_qty" />
+							<field name="rejected_qty" />
+							<field name="rework_qty" />
+						</tree>
+					</field>
+				</page>
+			</xpath>
+		</field>
+	</record>
+
+
+	<record id="mrp_workcenter_view_extends" model="ir.ui.view">
+		<field name="name">mrp.workcenter.form</field>
+		<field name="model">mrp.workcenter</field>
+		<field name="inherit_id" ref="mrp.mrp_workcenter_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='name']" position="after">
+				<field name="location_id" />
+			</xpath>
+		</field>
+	</record>
+
+	<record id="mrp_workcenter_view_extends" model="ir.ui.view">
+		<field name="name">mrp.workcenter.form</field>
+		<field name="model">mrp.workcenter</field>
+		<field name="inherit_id" ref="mrp.mrp_workcenter_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='name']" position="after">
+				<field name="location_id" />
+			</xpath>
+		</field>
+	</record>
+</odoo>
