@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="view_workcenter_quality_wizard_form" model="ir.ui.view">
+            <field name="name">Work Center Quality Wizard</field>
+            <field name="model">workcenter.quality.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Quality">
+                    <group>
+                        <group>
+							<label for="produced_qty"/>
+                            <div class="o_row">
+                                <field name="produced_qty" required="1" attrs="{'readonly': [('quality_check', '=', True)]}" style="width:35%;float:left;"/> 
+								<span style="float: left; font-size: 20px;" >/</span>
+                                <field name="produce_qty" readonly="1"  style="width: 40%; float: left; margin-left: 6px; font-weight: bold;" />
+                            </div>
+                            <field name="quality_check" invisible="1"/>
+                            <field name="product_id" invisible='1'/>
+                            <field name="product_tracking" invisible='1'/>
+                        </group>
+                        <group>
+                            <button name="enable_quality" string="Confirm" type="object" class="oe_highlight" attrs="{'invisible': [('quality_check', '=', True)]}"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('quality_check', '=', False)]}">
+                        <group>
+                            <field name="accepted_qty"/>
+                            <field name="wiz_lot_id" context="{'default_product_id': product_id}"/> 
+                        </group>
+                        <group>
+                            <field name="rejected_qty"/>
+                            <field name="rejection"/>
+                            <field name="rework_qty"/>
+                            <field name="rework"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" attrs="{'invisible': [('quality_check', '=', False)]}"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_workcenter_quality_wizard">
+            <field name="name">Quality</field>
+            <field name="res_model">workcenter.quality.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_workcenter_quality_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

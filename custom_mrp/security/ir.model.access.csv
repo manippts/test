@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_workcenter_quality_line,workcenter.quality.line,model_workcenter_quality_line,mrp.group_mrp_manager,1,1,1,0
+access_workcenter_quality_line_user,workcenter.quality.line,model_workcenter_quality_line,mrp.group_mrp_user,1,1,0,0
+access_mrp_unbuild,mrp.unbuild,model_mrp_unbuild,mrp.group_mrp_manager,1,1,1,0
+access_mrp_unbuild_user,mrp.unbuild,model_mrp_unbuild,mrp.group_mrp_user,1,1,0,0
+access_stock_quant,stock.quant,model_stock_quant,mrp.group_mrp_manager,1,1,1,0
+access_stock_quant_user,stock.quant,model_stock_quant,mrp.group_mrp_user,1,1,0,0
+access_multi_material_request_manager,multi.material.request,model_multi_material_request,mrp.group_mrp_manager,1,1,1,0
+access_multi_material_request_user,multi.material.request,model_multi_material_request,mrp.group_mrp_user,1,1,0,0
+access_material_requisition_items_manager,material.requisition.items,model_material_requisition_items,mrp.group_mrp_manager,1,1,1,0
+access_material_requisition_items_user,material.requisition.items,model_material_requisition_items,mrp.group_mrp_user,1,1,0,0
